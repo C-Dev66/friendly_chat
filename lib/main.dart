@@ -13,7 +13,7 @@ class FriendlyChatApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       title: 'FriendlyChat',
       home: ChatScreen(),
     );
@@ -31,7 +31,7 @@ class ChatScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title:, titleTextStyle: ,
+        title: const Text('FriendlyChat')
         )
       
     );
