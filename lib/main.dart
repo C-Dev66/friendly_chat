@@ -129,7 +129,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
             Flexible(
                 child: TextField(
               controller: _textController,
-              onChnaged: (text) {
+              onChanged: (text) {
                 setState(() {
                   _isComposing = text.isNotEmpty;
                 });
