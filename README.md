@@ -3,6 +3,7 @@
  A simple chat application for Android, iOS, and (optionally) the web.
  Will be used later for a personal app build down the road.
 
+Keep your eye out for that project ;*
 
 # Resource to be used along side building
 
