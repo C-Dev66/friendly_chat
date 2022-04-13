@@ -10,7 +10,7 @@ void main() {
 
 final ThemeData kIOSTheme = ThemeData(
   primarySwatch: Colors.red,
-  primaryColor: Colors.grey[100],
+  primaryColor: Colors.grey[200],
 );
 
 final ThemeData kDefaultTheme = ThemeData(
