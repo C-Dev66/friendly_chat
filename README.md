@@ -1,9 +1,10 @@
 # friendly_chat
-
  A simple chat application for Android, iOS, and (optionally) the web.
  Will be used later for a personal app build down the road. First time editing theme for IOS & Android. Each with their respective colors.
 
 Keep your eye out for that project ;*
+
+Revisitng this app to implement with Firebase for seamless Frontend and Backend mobile app development.
 
 # Resource to be used along side building
 
