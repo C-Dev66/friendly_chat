@@ -30,7 +30,7 @@ class FriendlyChatApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'FriendlyChat',
+      title: 'PrivateMessenger',
       theme: defaultTargetPlatform == TargetPlatform.iOS
       ? kIOSTheme
       : kDefaultTheme,
