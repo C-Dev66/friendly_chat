@@ -168,7 +168,8 @@ For more information refer to the official documentation.
 
 - [Firebase Documentation](https://firebase.google.com/docs)
 - [Flutterfire](https://firebase.google.com/docs/flutter/setup?platform=ios)
-- [Google's awesome Flutter Youtube channel, Lots of great content here](https://www.youtube.com/channel/UCwXdFgeE9KYzlDdR7TG9cMw)
+- [Flutter Documentation](https://docs.flutter.dev/)
+- [Google's Flutter Youtube channel, Lots of great content here](https://www.youtube.com/channel/UCwXdFgeE9KYzlDdR7TG9cMw)
 
 ---
 
