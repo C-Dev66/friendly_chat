@@ -1,7 +1,7 @@
 <img src="https://github.com/C-Dev66/friendly_chat/blob/main/screenshots/Preview.png" alt="HomePage"/>
 
-# RSVPGuestBookChatApp
-> This multi-platform application(Andoird, iOS, Web) serves the purpose of storing users who will be attending the up coming convention. Once authenticated guests have the option to communicate in a chatroom with all other participants.
+# friendly_chat
+> This multi-platform application(Andoird, iOS, Web) creates a chat instance where the user can send messages into a cache. Updating the page in real time with swift animations provided by flutter depencies.
 
 ---
 
@@ -19,117 +19,150 @@
 
 ## Description
 
-Application is built with Google's Flutter front-end as well their native back-end service Firebase.
+Application is built with Google's Flutter written in dart lang.
 
-- **Firebase Authentication** to allow your users to sign in to the app.
-- **Cloud Firestore** to save structured data on the cloud and get istant notification when data changes.
-- **Firebase Security** Rules to secure the database.
+We will be doing the following:
 
-Cloud Firestore is a NoSQL database, and data stored in the database is split into collections, documents, fields, and subcollections.
+- Building the main user interface 
+- Adding a UI for composing & displaying messages
+- Animating the final application
 
-We will store each message of the chat as a document in a top-level collection called guestbook.
-
-
-
-<img src="https://github.com/C-Dev66/RSVPGuestbookChatApp/blob/main/screenshots/DataModel.png" alt="HomePage" width="400"/>
 
 ---
 
 ## Code Snippets
 
-> Setting up the application
-```
-// Configure dependencies
-
-flutter pub add firebase_core
-flutter pub add firebase_auth
-flutter pub add cloud_firestore
-flutter pub add provider
-
-// Installing flutterfire
-
-dart pub global activiate  flutter_cli
-
-// Configuring your app
-
-flutterfire configure
-```
-
-> Adding user sign-in RSVP
+> Building the main user interface
 ```dart
-Consumer<ApplicationState>(
-	builder: (context, appState, _) => Authentication(
-		email: appState.email,
-        loginState: appState.loginState,
-        startLoginFlow: appState.startLoginFlow,
-        verifyEmail: appState.verifyEmail,
-        signInWithEmailAndPassword: appState.signInWithEmailAndPassword,
-        cancelRegistration: appState.cancelRegistration,
-        registerAccount: appState.registerAccount,
-        signOut: appState.signOut,
-    ),
-),
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 
-```
-
-> Writing Messages to Cloud Firestore
-```dart
-import 'dart:async';
-import 'package:cloud_firestore/cloud_firestore.dart';
-
-Future<DocumentReference> addMessageToGuestBook(String message) {
-	if (_loginState != ApplicationLoginState.loggedIn) {
-      throw Exception('Must be logged in');
+  @override
+  void dispose() {
+    for (var message in _messages) {
+      message.animationController.dispose();
     }
-
-    return FirebaseFirestore.instance
-        .collection('guestbook')
-        .add(<String, dynamic>{
-      'text': message,
-      'timestamp': DateTime.now().millisecondsSinceEpoch,
-      'name': FirebaseAuth.instance.currentUser!.displayName,
-      'userId': FirebaseAuth.instance.currentUser!.uid,
-    });
-}
-
-Consumer<ApplicationState>(
-     builder: (context, appState, _) => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-            if (appState.loginState == ApplicationLoginState.loggedIn) ...[
-                const Header('Discussion'),
-                GuestBook(
-                    addMessage: (message) =>
-                        appState.addMessageToGuestBook(message),
-                  ),
-            ],
-        ],
-    ),
-),
-```
-
-> Adding security & validation rules cloud.firestore
-```
-rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-    match /guestbook/{entry} {
-      allow read: if request.auth.uid != null;
-      allow write:
-      if request.auth.uid == request.resource.data.userId
-          && "name" in request.resource.data
-          && "text" in request.resource.data
-          && "timestamp" in request.resource.data;
-    }
+    super.dispose();
   }
-}
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(title: const Text('FriendlyChat')),
+        body: Container(
+          child: Column(
+            children: [
+              Flexible(
+                  child: ListView.builder(
+                padding: const EdgeInsets.all(8.0),
+                reverse: true,
+                itemBuilder: (_, index) => _messages[index],
+                itemCount: _messages.length,
+              )),
+              const Divider(height: 1.0),
+              Container(
+                decoration: BoxDecoration(color: Theme.of(context).cardColor),
+                child: _buildTextComposer(),
+              )
+            ],
+          ),
+          decoration: Theme.of(context).platform == TargetPlatform.iOS
+            ? BoxDecoration(
+              border: Border(
+                top: BorderSide(color: Colors.grey[200]!),
+              )
+            )
+            : null,
+        ));
+  }
 ```
+
+> Adding UI for composing & displaying messages
+```dart
+ Widget _buildTextComposer() {
+    return IconTheme(
+      data: IconThemeData(color: Theme.of(context).colorScheme.secondary),
+      child: Container(
+          margin: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: Row(children: [
+            Flexible(
+                child: TextField(
+              controller: _textController,
+              onChanged: (text) {
+                setState(() {
+                  _isComposing = text.isNotEmpty;
+                });
+              }, 
+              onSubmitted: _isComposing ? _handleSubmitted: null,
+              decoration:
+                  const InputDecoration.collapsed(hintText: 'Send a message'),
+              focusNode: _focusNode,
+            )),
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 4.0),
+              child: Theme.of(context).platform == TargetPlatform.iOS ? 
+              CupertinoButton(
+                child: const Text('Send'),
+                onPressed: _isComposing
+                  ? () => _handleSubmitted(_textController.text)
+                  : null,) :
+              IconButton(
+                  icon: const Icon(Icons.send),
+                  onPressed: _isComposing
+                      ? () => _handleSubmitted(_textController.text)
+                      : null,
+            ))
+          ])),
+    );
+  }
+
+```
+
+> Animating the application & applying theme
+```dart
+class ChatMessage extends StatelessWidget {
+  const ChatMessage(
+      {required this.text, required this.animationController, Key? key})
+      : super(key: key);
+
+//
+
+  @override
+  Widget build(BuildContext context) {
+    return SizeTransition(
+      sizeFactor:
+          CurvedAnimation(parent: animationController, curve: Curves.easeOut),
+      axisAlignment: 0.0,
+//
+
+final ThemeData kIOSTheme = ThemeData(
+  primarySwatch: Colors.red,
+  primaryColor: Colors.grey[200],
+);
+
+final ThemeData kDefaultTheme = ThemeData(
+  colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.red)
+      .copyWith(secondary: Colors.redAccent[400]),
+);
+
+
+```
+
 
 ---
 
 ## Summary
 
-Awesome introduction to Firebase, Cloud Firestore, & Security Rules. Really enjoyed this project and will seek to build more applications with their native database service. All around great experience, the future is bright for Flutter. Glad to be able to partaken in this revolutinary stack. 🤩🫶
+Fun project to introduce flutter into my workflow. Building the chat feature will prove useful when implementing into another future project. Looking forward to the next lab.
+
+We covered:
+
+- How to build a Flutter app from the ground up
+- How to use some of the shortcuts provided in Android Studio and IntelliJ
+- How to run, hot reload, and debug your Flutter app on an emulator, a simulator, and a device
+- How to customize your user interface with widgets and animations
+- How to customize your user interface for Android and iOS
+
 
 For more information refer to the official documentation.
 
