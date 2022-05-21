@@ -155,6 +155,8 @@ final ThemeData kDefaultTheme = ThemeData(
 
 Fun project to introduce flutter into my workflow. Building the chat feature will prove useful when implementing into another future project. Looking forward to the next lab.
 
+An extra step would be using Google's Flutterfire for backend intergration
+
 We covered:
 
 - How to build a Flutter app from the ground up
