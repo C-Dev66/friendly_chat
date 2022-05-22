@@ -1,7 +1,7 @@
 <img src="https://github.com/C-Dev66/friendly_chat/blob/main/screenshots/Preview.png" alt="HomePage"/>
 
 # friendly_chat
-> This multi-platform application(Andoird, iOS, Web) creates a chat instance where the user can send messages into a cache. Updating the page in real time with swift animations provided by flutter depencies.
+> This multi-platform application(Andoird, iOS, Web) creates a chat instance where the user can send messages into a cache. Updating the page in real time with swift animations provided by flutter depencies. Theming is applied to both iOS & Android.
 
 ---
 
